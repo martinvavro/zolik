@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <link rel="stylesheet" type="text/css" href="files/stylesheets/main.css" />
+    <link rel="stylesheet" type="text/css" href="files/stylesheets/joker.css" />
     <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet" />
     <link rel="icon" href="files/images/vavrologominiwhite.png" />
     <meta charset="UTF-8" />
@@ -42,11 +43,25 @@
       </ul>
     </header>
     <section class="full-height" id="about">
-      <div class="centered-div">
-        <h2>Under construction</h2>
+      <div class="centered-div" style="width: 100%"></div>
 
-        <button onclick="new Game()">hraj</button>
+      <div style="display: none" id="template">
+        <div class="card card-container">
+          <div class="card-inner">
+            <div class="upper">
+              <h1 class="card-value">A</h1>
+              <img src="files/assets/joker/cardIcons/Pikes.svg" class="card-icon card-icon-small" draggable="false" />
+            </div>
+            <img src="files/assets/joker/cardIcons/Pikes.svg" class="card-icon center" draggable="false" />
+            <div class="lower">
+              <img src="files/assets/joker/cardIcons/Pikes.svg" class="card-icon card-icon-small" draggable="false" />
+              <h1 class="card-value">A</h1>
+            </div>
+          </div>
+        </div>
+        <div class="card-empty-placeholder card-container"><div><div class="circle"></div></div>
       </div>
+      <script src="files/javascripts/joker/Options.js"></script>
       <script src="files/javascripts/joker/Card.js"></script>
       <script src="files/javascripts/joker/CardGroup.js"></script>
       <script src="files/javascripts/joker/Pack.js"></script>

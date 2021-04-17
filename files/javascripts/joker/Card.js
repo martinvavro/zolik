@@ -9,14 +9,14 @@ class Card {
   }
 
   toString() {
-    return this.#getValueString() + " of " + this.#getTypeString();
+    return this.getValueString() + " of " + this.#getTypeString();
   }
 
   #getTypeString() {
     return Card.#STRINGTYPES[this.type];
   }
 
-  #getValueString() {
+  getValueString() {
     return Card.#STRINGVALUES[this.value];
   }
 
@@ -25,6 +25,10 @@ class Card {
   }
 
   isJoker() {
-    return this.value == Card.#STRINGVALUES.length - 1;
+    return this.value === Card.#STRINGVALUES.length - 1;
+  }
+
+  isRed() {
+    return this.type < 2;
   }
 }

@@ -1,10 +1,14 @@
 class Table {
   constructor() {
-    this.cardGroup = new CardGroup();
+    this.cardGroups = new Array();
     this.pack = new Pack();
   }
 
   getPack() {
     return this.pack;
+  }
+
+  addCardGroup(cardGroup) {
+    this.cardGroups.push(cardGroup);
   }
 }

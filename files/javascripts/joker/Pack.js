@@ -1,8 +1,9 @@
 class Pack {
-  constructor(value) {
+  constructor() {
     this.cards = new Array();
-    this.generateMultiplePacks(value);
+    this.generateMultiplePacks(Options.getPacksCount());
     this.shufflePack();
+    this.kickerCard;
   }
 
   getSize() {
@@ -11,13 +12,22 @@ class Pack {
 
   generateMultiplePacks(number) {
     for (var i = 0; i < number; i++) {
-      this.cards = this.cards.concat(this.generateFreshPack());
+      this.cards = this.cards.concat(this.generateFreshPack(i === 0));
     }
   }
 
-  generateFreshPack() {
+  getBottomCard() {
+    return this.cards[0];
+  }
+
+  getKickerCard() {
+    return this.kickerCard;
+  }
+
+  generateFreshPack(jokers) {
     let pack = new Array();
-    for (let i = 0; i < 4; i++) for (let j = 0; j < 14; j++) pack.push(new Card(i, j));
+    let numberOfCards = jokers ? 14 : 13;
+    for (let i = 0; i < 4; i++) for (let j = 0; j < numberOfCards; j++) pack.push(new Card(i, j));
     return pack;
   }
 
@@ -39,16 +49,27 @@ class Pack {
   cutThePack() {
     let position = Pack.getRandomNumber(this.getSize() - 2) + 2;
     let cardGroup = new CardGroup();
-    for (var i = 0; i < 3; i++) cardGroup.addCard(this.cards.pop(position));
+    for (var i = 0; i < 3; i++) {
+      if (this.cards[position - i].isJoker()) {
+        cardGroup.addCard(this.drawSpecificPositionCard(position - i));
+      } else if (!this.kickerCard) {
+        this.kickerCard = this.drawSpecificPositionCard(position - i);
+      }
+    }
     return cardGroup;
   }
 
   drawTopCard() {
-    return this.cards.pop(this.getSize() - 1);
+    return this.cards.pop();
   }
 
   drawBottomCard() {
-    return this.cards.pop(0);
+    return this.drawSpecificPositionCard(0);
+  }
+
+  drawSpecificPositionCard(position) {
+    let card = this.cards.splice(position, 1);
+    return card.pop();
   }
 
   static getRandomNumber(limit) {

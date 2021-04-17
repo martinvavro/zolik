@@ -1,0 +1,186 @@
+section.full-height {
+  background-color: green;
+}
+
+* {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.card-container {
+  width: 100%;
+  padding-top: 159.259259259%;
+  position: relative;
+  border-radius: 1em;
+}
+
+.card {
+  background-color: antiquewhite;
+  background-image: linear-gradient(-45deg, transparent, transparent, transparent, white);
+
+  box-shadow: #00000057 5px 5px 10px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+  user-select: none;
+}
+
+.card:hover {
+  background-size: 200% 200%;
+  background-image: linear-gradient(-45deg, transparent, white, transparent, transparent);
+  box-shadow: #00000057 15px 15px 40px;
+  transform: scale(1.05);
+  animation: backgroundanimate 2s ease infinite;
+  z-index: 999;
+  transform: rotate(5deg);
+}
+
+.card-inner {
+  border-radius: inherit;
+  border: 2px solid;
+  margin: 5%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.red {
+  border-color: red;
+  color: red;
+}
+
+.black {
+  border-color: black;
+  color: black;
+}
+
+.navy {
+  border-color: navy;
+  color: navy;
+  margin-top: -159.259259259%;
+}
+
+.card h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 3.5em;
+}
+
+h1.card-value {
+  margin: 0 0;
+  height: fit-content;
+  width: fit-content;
+}
+
+.upper {
+  align-self: flex-start;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+  display: flex;
+  flex-direction: row;
+  width: calc(100% - 1em);
+}
+
+.lower {
+  align-self: flex-end;
+  margin-right: 0.5em;
+  margin-left: 0.5em;
+  display: flex;
+  flex-direction: row;
+  width: calc(100% - 1em);
+}
+
+.card img {
+  max-height: 3em;
+  align-self: center;
+}
+
+.upper img {
+  margin-left: auto;
+}
+
+.lower img {
+  margin-right: auto;
+}
+
+.card img.center {
+  max-width: 50%;
+  max-height: fit-content;
+  align-self: center;
+  margin: auto;
+  height: fit-content;
+}
+
+.full-height {
+  height: unset;
+}
+
+.card-group {
+  font-size: 5px;
+  width: min-content;
+  display: grid;
+  gap: 1em;
+  padding: 2em;
+  border: solid 2px darkgreen;
+  border-radius: 1em;
+  margin: 2em;
+}
+
+.player-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card-inner.card-back {
+  background: repeating-linear-gradient(45deg, navy, navy 5px, transparent 4px, transparent 8px);
+}
+
+.table-container {
+  font-size: 7px;
+  display: inline-grid;
+  grid-template-columns: min-content min-content;
+  gap: 3em;
+}
+
+.card-empty-placeholder {
+  color: darkgreen;
+  box-shadow: inset darkgreen 0px 0px 10px 4px;
+}
+
+.card-empty-placeholder div {
+  border: dashed 0.7em darkgreen;
+  border-radius: inherit;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.card-empty-placeholder div.circle {
+  border: dashed 0.7em darkgreen;
+  width: 6em;
+  height: 6em;
+  border-radius: 100%;
+  margin: auto;
+}
+
+.card-kicker {
+  transition: all 1s;
+  transform: rotate(90deg);
+  left: 6em;
+}
+
+.card-kicker:hover {
+  transform: rotate(70deg);
+  left: 10em;
+  z-index: unset;
+}

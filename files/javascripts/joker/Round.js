@@ -1,3 +1,10 @@
 class Round {
-  constructor() {}
+  constructor(round, players) {
+    this.roundNumber = round;
+    this.players = players;
+
+    this.startRound();
+  }
+
+  startRound() {}
 }
