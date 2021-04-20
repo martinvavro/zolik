@@ -20,6 +20,10 @@
 
       gtag("config", "G-KLKTR1N9G6");
     </script>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="files/javascripts/jquery.ui.touch-punch.min.js"></script>
   </head>
 
   <body class="lightbg">
@@ -42,7 +46,7 @@
         <li><a href="#contact" class="menuItem">CONTACT</a></li>
       </ul>
     </header>
-    <section class="full-height" id="about">
+    <section class="full-height">
       <div class="centered-div" style="width: 100%"></div>
 
       <div style="display: none" id="template">
@@ -59,7 +63,12 @@
             </div>
           </div>
         </div>
-        <div class="card-empty-placeholder card-container"><div><div class="circle"></div></div>
+        <div class="card-empty-placeholder card-container">
+          <div class="unsortable"><div class="circle"></div></div>
+        </div>
+        <div class="card-group-empty-placeholder sortable">
+          <div class="cross unsortable"></div>
+        </div>
       </div>
       <script src="files/javascripts/joker/Options.js"></script>
       <script src="files/javascripts/joker/Card.js"></script>
@@ -67,9 +76,7 @@
       <script src="files/javascripts/joker/Pack.js"></script>
       <script src="files/javascripts/joker/Player.js"></script>
       <script src="files/javascripts/joker/Round.js"></script>
-
       <script src="files/javascripts/joker/Table.js"></script>
-
       <script src="files/javascripts/joker/Game.js"></script>
     </section>
     <footer class="footer" id="contact">

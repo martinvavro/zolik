@@ -3,11 +3,27 @@ class Options {
     return 2;
   }
 
+  static getCardWidthInt() {
+    return 80;
+  }
+
+  static getFontSize() {
+    return `${Math.floor(this.getCardWidthInt() / 15)}px`;
+  }
+
+  static getJokerFontSize() {
+    return `${Math.floor(this.getCardWidthInt() / 6)}px`;
+  }
+
   static getCardWidth() {
-    return "75px";
+    return `${this.getCardWidthInt()}px`;
   }
 
   static getTableCardWidth() {
-    return "100px";
+    return `${this.getCardWidthInt()}px`;
+  }
+
+  static getMaxColumnsInCardgroup() {
+    return Math.floor(PARENT.clientWidth / (this.getCardWidthInt() + 15));
   }
 }

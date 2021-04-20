@@ -41,40 +41,48 @@ class Game {
   generateTurnView(player) {}
 }
 
+var PARENT = document.querySelector(".centered-div");
+
 let game = new Game();
 game.dealCards();
-renderTable(game.table);
-for (let i = 0; i < game.getPlayersCount(); i++) {
-  game.players[i].regroupByType(game.players[i].cardGroups[0]);
-  renderPlayerView(game.players[i]);
+initView();
+
+function initView() {
+  PARENT.style.fontSize = Options.getFontSize();
+  renderTable(game.table);
+  for (let i = 0; i < game.getPlayersCount(); i++) {
+    game.players[i].regroupByType(game.players[i].cardGroups[0]);
+    renderPlayerView(game.players[i]);
+  }
 }
 
 function renderTable(table) {
   let tableEl = document.createElement("div");
-  let tableId = document.createElement("h1");
   tableEl.classList.add("table-container");
-  tableId.innerHTML = "Table";
-  document.querySelector(".centered-div").appendChild(tableId);
-  // tableEl.appendChild(tableId);
-  let cardHolder = document.createElement("div");
-  cardHolder.style.width = Options.getTableCardWidth();
+  renderTableHeading();
+  let emptyCardGroup = renderEmptyCard();
+  emptyCardGroup.id = "pile";
+  setSortable(emptyCardGroup);
+  tableEl.appendChild(emptyCardGroup);
+  tableEl.appendChild(renderCardsPack(table));
+  PARENT.appendChild(tableEl);
+}
 
-  let cardPackHolder = cardHolder.cloneNode(true);
+function renderTableHeading() {
+  let tableHeading = document.createElement("h1");
+  tableHeading.innerHTML = "Table";
+  PARENT.appendChild(tableHeading);
+}
 
-  // cardHolder.appendChild(renderCard(table.getPack().getBottomCard()));
-
-  cardHolder.appendChild(renderEmptyCard());
-  let kickerCard = renderKickerCard(table);
-  cardPackHolder.appendChild(kickerCard);
-  cardPackHolder.appendChild(renderCardBack());
-  tableEl.appendChild(cardHolder);
-  tableEl.appendChild(cardPackHolder);
-  document.querySelector(".centered-div").appendChild(tableEl);
+function renderCardsPack(table) {
+  let pack = renderKickerCard(table);
+  pack.append(renderCardBack());
+  return encapsulateInDiv(pack, Options.getCardWidth);
 }
 
 function renderKickerCard(table) {
   let kickerCard = renderCard(table.getPack().getKickerCard());
-  kickerCard.classList.add("card-kicker");
+  kickerCard.firstChild.classList.add("card-kicker");
   return kickerCard;
 }
 
@@ -83,31 +91,96 @@ function renderPlayerView(player) {
   playerDiv.classList.add("player-container");
   let playerId = document.createElement("h1");
   playerId.innerHTML = "player " + player.getName();
-  document.querySelector(".centered-div").appendChild(playerId);
+  PARENT.appendChild(playerId);
   renderHand(player, playerDiv);
-  document.querySelector(".centered-div").appendChild(playerDiv);
+  PARENT.appendChild(playerDiv);
 }
 
 function renderHand(player, playerDiv) {
   player.getCardGroups().forEach((cardGroup) => {
-    let cardContainer = document.createElement("div");
-    cardContainer.classList.add("card-group");
-    cardContainer.style.gridTemplateColumns = `repeat(${cardGroup.getSize()}, auto)`;
-
+    let cardGroupEl = renderCardGroup();
     cardGroup.getCards().forEach((card) => {
-      let cardHolder = document.createElement("div");
-      cardHolder.style.width = Options.getCardWidth();
-      cardHolder.appendChild(renderCard(card));
-      cardContainer.appendChild(cardHolder);
+      cardGroupEl.appendChild(renderCard(card));
     });
-    playerDiv.appendChild(cardContainer);
+    setRenderedCardGroupWidth(cardGroupEl);
+    playerDiv.appendChild(cardGroupEl);
   });
+
+  playerDiv.appendChild(renderAddNewCardGroup());
+}
+
+function renderCardGroup() {
+  let cardGroup = document.createElement("div");
+  cardGroup.classList.add("card-group", "sortable");
+  setSortable(cardGroup);
+  return cardGroup;
+}
+
+function setSortable(cardGroup) {
+  var oldParentDiv, hoverTarget;
+  $(cardGroup).sortable({
+    connectWith: ".sortable",
+    tolerance: "pointer",
+    cancel: ".unsortable",
+    containment: "section",
+    receive: function (event, ui) {
+      let newParentDiv = ui.item[0].parentElement;
+      handleNewGroupCreation(newParentDiv);
+      setRenderedCardGroupWidth(newParentDiv);
+      if (newParentDiv.id == "pile") {
+        newParentDiv.lastChild.remove();
+        newParentDiv.firstChild.style = "";
+      }
+    },
+    activate: function (event, ui) {
+      oldParentDiv = ui.item[0].parentElement;
+    },
+    over: function (event, ui) {
+      hoverTarget = ui.placeholder[0].parentElement;
+      if (hoverTarget.id == "pile" && oldParentDiv.id != hoverTarget.id) {
+        hoverTarget.firstChild.classList.add("shadowHighlight");
+        $(hoverTarget.firstChild).mouseenter(hoverTarget.firstChild.classList.add("shadowHighlight")).mouseleave(hoverTarget.firstChild.classList.remove("shadowHighlight"));
+
+        ui.placeholder[0].style = "display:none;";
+      } else {
+        PARENT.querySelector("#pile").firstChild.style = "";
+      }
+    },
+    stop: function (event, ui) {
+      if (oldParentDiv) {
+        if (oldParentDiv.childElementCount == 0) oldParentDiv.remove();
+        else setRenderedCardGroupWidth(oldParentDiv);
+      }
+    },
+  });
+  $(cardGroup).disableSelection();
+}
+
+function handleNewGroupCreation(newParentDiv) {
+  if (newParentDiv.classList.contains("card-group-empty-placeholder")) {
+    newParentDiv.classList.remove("card-group-empty-placeholder");
+    newParentDiv.classList.add("card-group");
+    newParentDiv.querySelector(".cross").remove();
+    newParentDiv.parentElement.appendChild(renderAddNewCardGroup());
+  }
+}
+
+function renderAddNewCardGroup() {
+  let emptyCardGroup = document.querySelector(".card-group-empty-placeholder").cloneNode(true);
+  setSortable(emptyCardGroup);
+  return emptyCardGroup;
+}
+
+function setRenderedCardGroupWidth(cardContainer) {
+  let max_width = Options.getMaxColumnsInCardgroup();
+  let columnCount = cardContainer.childElementCount > max_width ? max_width : cardContainer.childElementCount;
+  cardContainer.style.gridTemplateColumns = `repeat(${columnCount}, auto)`;
 }
 
 function renderCard(card) {
   let cardEl = document.querySelector("#template .card").cloneNode(true);
   if (card.isJoker()) {
-    cardEl.style.fontSize = "4px";
+    cardEl.querySelectorAll("h1").forEach((h1) => (h1.style.fontSize = Options.getJokerFontSize()));
     cardEl.querySelectorAll("img").forEach((img) => (img.src = ""));
   } else {
     cardEl.querySelectorAll("img").forEach((img) => (img.src = card.getIconPath()));
@@ -115,7 +188,7 @@ function renderCard(card) {
   cardEl.querySelectorAll(".card-value").forEach((el) => (el.innerHTML = card.getValueString()));
 
   cardEl.classList.add(card.isRed() ? "red" : "black");
-  return cardEl;
+  return encapsulateInDiv(cardEl, Options.getCardWidth());
 }
 
 function renderCardBack() {
@@ -128,5 +201,13 @@ function renderCardBack() {
 
 function renderEmptyCard() {
   let cardEl = document.querySelector("#template .card-empty-placeholder").cloneNode(true);
-  return cardEl;
+  return encapsulateInDiv(cardEl, Options.getCardWidth(), "sortable");
+}
+
+function encapsulateInDiv(child, width, className) {
+  let parentDiv = document.createElement("div");
+  if (width) parentDiv.style.width = width;
+  if (className) parentDiv.className = className;
+  parentDiv.appendChild(child);
+  return parentDiv;
 }
