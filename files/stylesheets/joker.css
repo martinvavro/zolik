@@ -150,7 +150,6 @@ h1.card-value {
 }
 
 .card-inner.card-back {
-  /* background: repeating-linear-gradient(45deg, navy, navy 5px, transparent 4px, transparent 8px); */
   background: repeating-linear-gradient(35deg, navy 3px, navy 6px, transparent 7px, transparent 9px);
 }
 
@@ -164,8 +163,30 @@ h1.card-value {
   color: darkgreen;
 }
 
-.shadowHighlight {
+.shadow-highlight {
   box-shadow: inset darkgreen 0px 0px 10px 4px;
+  border-radius: 1em;
+}
+
+.shadow-highlight-intense {
+  box-shadow: inset darkgreen 0px 0px 10px 8px;
+  border-radius: 1em;
+}
+
+#pile {
+  padding: 1em;
+}
+
+.card-back-pile {
+  margin: 1em;
+}
+
+#pile .ui-sortable-placeholder {
+  display: none;
+}
+
+.card-group-empty-placeholder .ui-sortable-placeholder {
+  display: none;
 }
 
 .card-empty-placeholder div {

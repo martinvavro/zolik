@@ -41,6 +41,10 @@ class Game {
   generateTurnView(player) {}
 }
 
+// ****************************************************//
+// ******** VIEW METHODS TO BE MOVED ELSEWHERE ********//
+// ****************************************************//
+
 var PARENT = document.querySelector(".centered-div");
 
 let game = new Game();
@@ -59,13 +63,31 @@ function initView() {
 function renderTable(table) {
   let tableEl = document.createElement("div");
   tableEl.classList.add("table-container");
-  renderTableHeading();
+  renderTableHeading(); //todo remove after debugging
   let emptyCardGroup = renderEmptyCard();
   emptyCardGroup.id = "pile";
   setSortable(emptyCardGroup);
+  setDroppable(emptyCardGroup);
   tableEl.appendChild(emptyCardGroup);
-  tableEl.appendChild(renderCardsPack(table));
+  let cardsBackAndKicker = renderCardsPack(table);
+  setSortable(cardsBackAndKicker);
+  tableEl.appendChild(cardsBackAndKicker);
   PARENT.appendChild(tableEl);
+}
+
+function setDroppable(element) {
+  $(element).droppable({
+    accept: ".card-element",
+    classes: {
+      "ui-droppable-active": "shadow-highlight",
+      "ui-droppable-hover": "shadow-highlight-intense",
+    },
+    drop: function (event, ui) {
+      $(this).find(".dropped").remove();
+      ui.draggable[0].classList.add("dropped");
+      $(this).add(ui.draggable[0]);
+    },
+  });
 }
 
 function renderTableHeading() {
@@ -77,7 +99,7 @@ function renderTableHeading() {
 function renderCardsPack(table) {
   let pack = renderKickerCard(table);
   pack.append(renderCardBack());
-  return encapsulateInDiv(pack, Options.getCardWidth);
+  return encapsulateInDiv(pack, Options.getCardWidth(), "card-back-pile");
 }
 
 function renderKickerCard(table) {
@@ -127,25 +149,11 @@ function setSortable(cardGroup) {
       let newParentDiv = ui.item[0].parentElement;
       handleNewGroupCreation(newParentDiv);
       setRenderedCardGroupWidth(newParentDiv);
-      if (newParentDiv.id == "pile") {
-        newParentDiv.lastChild.remove();
-        newParentDiv.firstChild.style = "";
-      }
     },
     activate: function (event, ui) {
       oldParentDiv = ui.item[0].parentElement;
     },
-    over: function (event, ui) {
-      hoverTarget = ui.placeholder[0].parentElement;
-      if (hoverTarget.id == "pile" && oldParentDiv.id != hoverTarget.id) {
-        hoverTarget.firstChild.classList.add("shadowHighlight");
-        $(hoverTarget.firstChild).mouseenter(hoverTarget.firstChild.classList.add("shadowHighlight")).mouseleave(hoverTarget.firstChild.classList.remove("shadowHighlight"));
-
-        ui.placeholder[0].style = "display:none;";
-      } else {
-        PARENT.querySelector("#pile").firstChild.style = "";
-      }
-    },
+    over: function (event, ui) {},
     stop: function (event, ui) {
       if (oldParentDiv) {
         if (oldParentDiv.childElementCount == 0) oldParentDiv.remove();
@@ -179,6 +187,7 @@ function setRenderedCardGroupWidth(cardContainer) {
 
 function renderCard(card) {
   let cardEl = document.querySelector("#template .card").cloneNode(true);
+  cardEl.id = card.getID();
   if (card.isJoker()) {
     cardEl.querySelectorAll("h1").forEach((h1) => (h1.style.fontSize = Options.getJokerFontSize()));
     cardEl.querySelectorAll("img").forEach((img) => (img.src = ""));
@@ -188,7 +197,7 @@ function renderCard(card) {
   cardEl.querySelectorAll(".card-value").forEach((el) => (el.innerHTML = card.getValueString()));
 
   cardEl.classList.add(card.isRed() ? "red" : "black");
-  return encapsulateInDiv(cardEl, Options.getCardWidth());
+  return encapsulateInDiv(cardEl, Options.getCardWidth(), "card-element");
 }
 
 function renderCardBack() {
@@ -201,7 +210,8 @@ function renderCardBack() {
 
 function renderEmptyCard() {
   let cardEl = document.querySelector("#template .card-empty-placeholder").cloneNode(true);
-  return encapsulateInDiv(cardEl, Options.getCardWidth(), "sortable");
+  cardEl.style.width = Options.getCardWidth();
+  return encapsulateInDiv(cardEl, null, "sortable");
 }
 
 function encapsulateInDiv(child, width, className) {

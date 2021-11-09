@@ -1,4 +1,6 @@
 class Options {
+  static cardId = 0;
+
   static getPacksCount() {
     return 2;
   }
@@ -25,5 +27,10 @@ class Options {
 
   static getMaxColumnsInCardgroup() {
     return Math.floor(PARENT.clientWidth / (this.getCardWidthInt() + 15));
+  }
+
+  static getUniqueID() {
+    Options.cardId++;
+    return Options.cardId;
   }
 }

@@ -5,6 +5,7 @@ class Card {
   constructor(type, value) {
     this.type = type;
     this.value = value;
+    this.id = Options.getUniqueID();
     return this;
   }
 
@@ -21,7 +22,7 @@ class Card {
   }
 
   getIconPath() {
-    return `files/assets/joker/cardIcons/` + this.#getTypeString() + `.svg`;
+    return `files/assets/joker/cardIcons/${this.#getTypeString()}.svg`;
   }
 
   isJoker() {
@@ -30,5 +31,9 @@ class Card {
 
   isRed() {
     return this.type < 2;
+  }
+
+  getID() {
+    return this.id;
   }
 }
